@@ -10,7 +10,7 @@ using namespace std;
 \n        { return END_LINE; }
 (\!.*)           { return COMMENT; }
 \.            { return DOT; }
-[A-Za-z_\$\@\#][A-Za-z_$0-9]*  {yylval.sval=strdup(yytext);return ID;}
+[A-Za-z_\$\@\#][A-Za-z_$0-9\-]*  {yylval.sval=strdup(yytext);return ID;}
 \:			{return COLON;}
 \,			{return COMMA;}
 [0-9]+\.[0-9]+ { yylval.fval = atof(yytext); return FLOAT; }

@@ -63,30 +63,30 @@ line:
 	| component END_LINE
 	;
 component:
-	directive 
-	| label
-	| instruction 
+	instruction 
+	|directive 
+	|label 
 	;
 directive:
-	DOT ID arguments {std::cout << "Directive :" << $2 << std::endl;}
-	|DOT ID
-	
+	DOT ID
+	|DOT ID arguments {std::cout << "Directive :" << $2 << std::endl;}
 	;
 label:
 	ID COLON {std::cout << "Label: " << $1 << std::endl;}
+	| DOT ID COLON {std::cout << "Label: " << $2 << std::endl;}
 	;
 instruction:
 	ID 	{std::cout << "Opcode: " << $1 << std::endl;}
 	|ID {std::cout << "Opcode: " << $1 << std::endl;} arguments 	
 	;
 arguments:
-	 arguments COMMA argument
-	|argument 
+	 argument
+	 |arguments COMMA argument 
 	
 	;
 argument:
-	| expression
-	| LEFT_SQ expression RIGHT_SQ
+	 unary_expression
+	| LEFT_SQ unary_expression RIGHT_SQ
 	;
 literal:
 	INT
@@ -95,15 +95,20 @@ literal:
 	| REGISTER 
 	| special_register
 	| ID
+	| DOT OPERATOR ID //Stupid DIRECTIVE ARGUMENT
 ;
 special_register:
 	REGISTER '(' DOT ID ')' {std::cout << "Label:"<< $4 << std::endl;}
 ;
-expression:
-	 expression OPERATOR literal 
+unary_expression:
+	binary_expression
+	|OPERATOR INT
+;
+binary_expression:
+	 binary_expression OPERATOR literal 
 	| literal
 	
-
+;
 %%
 
 void handle() {
@@ -125,7 +130,7 @@ void handle() {
 }
 
 void yyerror(const char *s) {
-	cout << "EEK, parse error!  Message: " << s << endl;
+	cout << "EEK, parse error! Dont Care Message: " << s << endl;
 	// might as well halt now:
 	exit(-1);
 }
