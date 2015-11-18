@@ -202,10 +202,11 @@ typedef
 #define	OPERATOR	266
 #define	LEFT_SQ	267
 #define	RIGHT_SQ	268
-#define	DIR_	269
-#define	INT	270
-#define	FLOAT	271
-#define	STRING	272
+#define	LB	269
+#define	RB	270
+#define	INT	271
+#define	FLOAT	272
+#define	STRING	273
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -265,7 +266,8 @@ static const int SPECIAL_REGISTER;
 static const int OPERATOR;
 static const int LEFT_SQ;
 static const int RIGHT_SQ;
-static const int DIR_;
+static const int LB;
+static const int RB;
 static const int INT;
 static const int FLOAT;
 static const int STRING;
@@ -288,10 +290,11 @@ static const int STRING;
 	,OPERATOR=266
 	,LEFT_SQ=267
 	,RIGHT_SQ=268
-	,DIR_=269
-	,INT=270
-	,FLOAT=271
-	,STRING=272
+	,LB=269
+	,RB=270
+	,INT=271
+	,FLOAT=272
+	,STRING=273
 
 
 #line 215 "/usr/share/bison++/bison.h"

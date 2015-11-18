@@ -28,16 +28,17 @@ void yyerror(const char *s);
 %token COMMENT
 %token END_LINE
 %token DOT
-%token ID
+%token <sval> ID
 %token COLON
 %token COMMA
 %token REGISTER
 %token SPECIAL_REGISTER
 %token OPERATOR
 %token LEFT_SQ 
-%token RIGHT_SQ 
-%token DIR_
+%token RIGHT_SQ
 %token OPERATOR
+%token LB
+%token RB
 // define the "terminal symbol" token types I'm going to use (in CAPS
 // by convention), and associate each with a field of the union:
 %token <ival> INT
@@ -63,20 +64,20 @@ line:
 	;
 component:
 	directive 
-	| label { std::cout << "Label"  << std::endl;}
+	| label
 	| instruction 
 	;
 directive:
-	DOT ID { std::cout << "Directive: " << std::endl;} arguments
+	DOT ID arguments {std::cout << "Directive :" << $2 << std::endl;}
 	|DOT ID
 	
 	;
 label:
-	ID COLON
+	ID COLON {std::cout << "Label: " << $1 << std::endl;}
 	;
 instruction:
-	ID
-	|ID arguments
+	ID 	{std::cout << "Opcode: " << $1 << std::endl;}
+	|ID {std::cout << "Opcode: " << $1 << std::endl;} arguments 	
 	;
 arguments:
 	 arguments COMMA argument
@@ -86,15 +87,17 @@ arguments:
 argument:
 	| expression
 	| LEFT_SQ expression RIGHT_SQ
-	| DIR_
 	;
 literal:
 	INT
 	| FLOAT
 	| STRING 
 	| REGISTER 
-	| SPECIAL_REGISTER
+	| special_register
 	| ID
+;
+special_register:
+	REGISTER '(' DOT ID ')' {std::cout << "Label:"<< $4 << std::endl;}
 ;
 expression:
 	 expression OPERATOR literal 

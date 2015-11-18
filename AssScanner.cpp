@@ -288,12 +288,11 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 
 #define YY_NUM_RULES 18
 #define YY_END_OF_BUFFER 19
-static yyconst short int yy_accept[32] =
+static yyconst short int yy_accept[30] =
     {   0,
         0,    0,   19,   17,    1,    2,    3,   17,    5,   17,
-       14,    7,    4,   10,    6,   15,    8,   16,    3,    0,
-       11,    0,    5,   12,    0,   10,    0,    9,    0,   13,
-        0
+       12,   13,   14,    7,    4,    9,    6,   15,   16,    3,
+        0,   10,    0,    5,   11,    0,    9,    8,    0
     } ;
 
 static yyconst int yy_ec[256] =
@@ -334,42 +333,42 @@ static yyconst int yy_meta[20] =
         1,    1,    1,    3,    1,    3,    1,    1,    1
     } ;
 
-static yyconst short int yy_base[36] =
+static yyconst short int yy_base[33] =
     {   0,
-        0,    0,   44,   45,   45,   45,    0,   15,   14,    0,
-       45,   45,   45,    9,   45,   45,   45,   45,    0,   19,
-       45,   36,   18,   27,   21,   13,    0,   20,   21,   45,
-       45,   37,   40,   27,   26
+        0,    0,   35,   44,   44,   44,    0,   15,   14,    0,
+       44,   44,   44,   44,   44,    9,   44,   44,   44,    0,
+       19,   44,   31,   18,    0,   17,   13,   16,   44,   37,
+       40,   26
     } ;
 
-static yyconst short int yy_def[36] =
+static yyconst short int yy_def[33] =
     {   0,
-       31,    1,   31,   31,   31,   31,   32,   33,   31,   34,
-       31,   31,   31,   31,   31,   31,   31,   31,   32,   33,
-       31,   33,   31,   34,   31,   31,   35,   31,   35,   31,
-        0,   31,   31,   31,   31
+       29,    1,   29,   29,   29,   29,   30,   31,   29,   32,
+       29,   29,   29,   29,   29,   29,   29,   29,   29,   30,
+       31,   29,   31,   29,   32,   29,   29,   29,    0,   29,
+       29,   29
     } ;
 
-static yyconst short int yy_nxt[65] =
+static yyconst short int yy_nxt[64] =
     {   0,
-        4,    5,    6,    7,    8,    9,    9,   10,    4,    4,
-       11,   12,   13,   14,   15,    9,   16,   17,   18,   21,
-       23,   25,   26,   21,   23,   25,   26,   23,   29,   24,
-       30,   23,   22,   28,   28,   27,   22,   19,   31,   19,
-       20,   20,   20,   31,    3,   31,   31,   31,   31,   31,
-       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31
+        4,    5,    6,    7,    8,    9,    9,   10,   11,   12,
+       13,   14,   15,   16,   17,    9,   18,    4,   19,   22,
+       24,   26,   27,   22,   24,   26,   27,   24,   25,   28,
+       28,   24,   23,   29,   29,   29,   23,   20,   29,   20,
+       21,   21,   21,    3,   29,   29,   29,   29,   29,   29,
+       29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+       29,   29,   29
     } ;
 
-static yyconst short int yy_chk[65] =
+static yyconst short int yy_chk[64] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    8,
-        9,   14,   14,   20,   23,   26,   26,    9,   35,   34,
-       29,   23,    8,   28,   25,   24,   20,   32,   22,   32,
-       33,   33,   33,    3,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   31,   31
+        9,   16,   16,   21,   24,   27,   27,    9,   32,   28,
+       26,   24,    8,   23,    3,    0,   21,   30,    0,   30,
+       31,   31,   31,   29,   29,   29,   29,   29,   29,   29,
+       29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+       29,   29,   29
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -391,7 +390,7 @@ char *yytext;
 #include "AssParser.h"
 using namespace std;
 #define YY_DECL extern "C" int yylex()
-#line 395 "AssScanner.cpp"
+#line 394 "AssScanner.cpp"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -555,7 +554,7 @@ YY_DECL
 
 #line 8 "AssScanner.l"
 
-#line 559 "AssScanner.cpp"
+#line 558 "AssScanner.cpp"
 
 	if ( yy_init )
 		{
@@ -606,13 +605,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 32 )
+				if ( yy_current_state >= 30 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 45 );
+		while ( yy_base[yy_current_state] != 44 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -661,7 +660,7 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 13 "AssScanner.l"
-{return ID;}
+{yylval.sval=strdup(yytext);return ID;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -676,32 +675,32 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 16 "AssScanner.l"
-{return DIR_;}
+{ yylval.fval = atof(yytext); return FLOAT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 17 "AssScanner.l"
-{ yylval.fval = atof(yytext); return FLOAT; }
+{ yylval.ival = atoi(yytext); return INT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 18 "AssScanner.l"
-{ yylval.ival = atoi(yytext); return INT; }
+{ yylval.sval = strdup(yytext); return STRING;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 19 "AssScanner.l"
-{ yylval.sval = strdup(yytext); return STRING;}
+{return REGISTER;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 20 "AssScanner.l"
-{return REGISTER;}
+{return '(';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 21 "AssScanner.l"
-{return SPECIAL_REGISTER;}
+{return ')';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
@@ -720,15 +719,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 25 "AssScanner.l"
+#line 26 "AssScanner.l"
 ;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 26 "AssScanner.l"
+#line 27 "AssScanner.l"
 ECHO;
 	YY_BREAK
-#line 732 "AssScanner.cpp"
+#line 731 "AssScanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1020,7 +1019,7 @@ static yy_state_type yy_get_previous_state()
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 32 )
+			if ( yy_current_state >= 30 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1055,11 +1054,11 @@ yy_state_type yy_current_state;
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 32 )
+		if ( yy_current_state >= 30 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 31);
+	yy_is_jam = (yy_current_state == 29);
 
 	return yy_is_jam ? 0 : yy_current_state;
 	}
@@ -1618,5 +1617,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 26 "AssScanner.l"
+#line 27 "AssScanner.l"
 
