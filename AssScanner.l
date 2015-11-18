@@ -6,16 +6,21 @@ using namespace std;
 #define YY_DECL extern "C" int yylex()
 %}
 %%
-[ \t\n] ;
-sNaZZle        { return SNAZZLE; }
-type           { return TYPE; }
-end            { return END; }
+[ \t] ;
+\n        { return END_LINE; }
+(\!.*)           { return COMMENT; }
+\.            { return DOT; }
+[A-Za-z_\$\@\#][A-Za-z_$0-9]*  {return ID;}
+\:			{return COLON;}
+\,			{return COMMA;}
+\\			{return DIR_;}
 [0-9]+\.[0-9]+ { yylval.fval = atof(yytext); return FLOAT; }
 [0-9]+         { yylval.ival = atoi(yytext); return INT; }
-[a-zA-Z0-9]+   {
-	// we have to copy because we can't rely on yytext not changing underneath us:
-	yylval.sval = strdup(yytext);
-	return STRING;
-}
+\"(\\.|[^\\"])*\"  { yylval.sval = strdup(yytext); return STRING;}
+\%[A-Za-z_$@0-9]+				{return REGISTER;}
+\%[A-Za-z_$@0-9]+\([A-Za-z_$@0-9]+\)				{return SPECIAL_REGISTER;}
+[\+\-]			{return OPERATOR;}
+\[				{return LEFT_SQ;}
+\]				{return RIGHT_SQ;}
 .              ;
 %%
