@@ -13,7 +13,7 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 21 "AssParser.y"
+#line 27 "AssParser.y"
 typedef union {
 	int ival;
 	float fval;
@@ -23,6 +23,8 @@ typedef union {
 #ifndef YY_USE_CLASS
 #define YYSTYPE yy_parse_stype
 #endif
+#define YY_parse_PARSE_PARAM  \
+	std::list<AssemblyArgument*> *arg_list
 
 #line 21 "/usr/share/bison++/bison.h"
  /* %{ and %header{ and %union, during decl */

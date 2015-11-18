@@ -103,17 +103,23 @@ Maintained by Magnus Ekdahl <magnus@debian.org>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include "AssemblyInfo.h"
 using namespace std;
 
 // stuff from flex that bison needs to know about:
 extern "C" int yylex();
-extern "C" int yyparse();
+extern "C" int yyparse(std::list<AssemblyArgument*> *arg_list);
 extern "C" FILE *yyin;
+
+// stuff to store information:
+AssemblyProgram *program = new AssemblyProgram();
 
 void handle(); 
 void yyerror(const char *s);
 
-#line 21 "AssParser.y"
+#line 27 "AssParser.y"
 typedef union {
 	int ival;
 	float fval;
@@ -123,6 +129,8 @@ typedef union {
 #ifndef YY_USE_CLASS
 #define YYSTYPE yy_parse_stype
 #endif
+#define YY_parse_PARSE_PARAM  \
+	std::list<AssemblyArgument*> *arg_list
 
 #line 88 "/usr/share/bison++/bison.cc"
 /* %{ and %header{ and %union, during decl */
@@ -532,32 +540,30 @@ static const char yytranslate[] = {     0,
 
 #if YY_parse_DEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     2,     5,     7,    11,    14,    16,    18,    20,    23,
-    27,    30,    34,    36,    37,    41,    43,    47,    49,    53,
-    55,    57,    59,    61,    63,    65,    69,    75,    77,    80,
-    84
+     0,     2,     5,     7,    11,    14,    16,    18,    20,    24,
+    27,    31,    33,    34,    38,    40,    44,    46,    50,    52,
+    54,    56,    58,    60,    62,    66,    72,    74,    77,    81
 };
 
 static const short yyrhs[] = {    22,
      0,    22,    23,     0,    23,     0,    24,     3,     4,     0,
     24,     4,     0,    27,     0,    25,     0,    26,     0,     5,
-     6,     0,     5,     6,    29,     0,     6,     7,     0,     5,
-     6,     7,     0,     6,     0,     0,     6,    28,    29,     0,
-    30,     0,    29,     8,    30,     0,    33,     0,    12,    33,
-    13,     0,    16,     0,    17,     0,    18,     0,     9,     0,
-    32,     0,     6,     0,     5,    11,     6,     0,     9,    19,
-     5,     6,    20,     0,    34,     0,    11,    16,     0,    34,
-    11,    31,     0,    31,     0
+     6,    29,     0,     6,     7,     0,     5,     6,     7,     0,
+     6,     0,     0,     6,    28,    29,     0,    30,     0,    29,
+     8,    30,     0,    33,     0,    12,    33,    13,     0,    16,
+     0,    17,     0,    18,     0,     9,     0,    32,     0,     6,
+     0,     5,    11,     6,     0,     9,    19,     5,     6,    20,
+     0,    34,     0,    11,    16,     0,    34,    11,    31,     0,
+    31,     0
 };
 
 #endif
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    53,    56,    58,    61,    63,    65,    67,    68,    70,    72,
-    74,    76,    78,    80,    81,    82,    84,    87,    89,    91,
-    93,    94,    95,    96,    97,    98,   100,   103,   105,   107,
-   109
+    60,    63,    65,    68,    70,    72,    74,    75,    77,    80,
+    82,    84,    86,    87,    88,    90,    93,    95,    97,   103,
+   104,   105,   106,   107,   108,   110,   113,   115,   117,   119
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","COMMENT",
@@ -570,25 +576,23 @@ static const char * const yytname[] = {   "$","error","$illegal.","COMMENT",
 #endif
 
 static const short yyr1[] = {     0,
-    21,    22,    22,    23,    23,    24,    24,    24,    25,    25,
-    26,    26,    27,    28,    27,    29,    29,    30,    30,    31,
-    31,    31,    31,    31,    31,    31,    32,    33,    33,    34,
-    34
+    21,    22,    22,    23,    23,    24,    24,    24,    25,    26,
+    26,    27,    28,    27,    29,    29,    30,    30,    31,    31,
+    31,    31,    31,    31,    31,    32,    33,    33,    34,    34
 };
 
 static const short yyr2[] = {     0,
-     1,     2,     1,     3,     2,     1,     1,     1,     2,     3,
-     2,     3,     1,     0,     3,     1,     3,     1,     3,     1,
-     1,     1,     1,     1,     1,     3,     5,     1,     2,     3,
-     1
+     1,     2,     1,     3,     2,     1,     1,     1,     3,     2,
+     3,     1,     0,     3,     1,     3,     1,     3,     1,     1,
+     1,     1,     1,     1,     3,     5,     1,     2,     3,     1
 };
 
 static const short yydefact[] = {     0,
-     0,    14,     1,     3,     0,     7,     8,     6,     9,    11,
-     0,     2,     0,     5,     0,    25,    12,    23,     0,     0,
-    20,    21,    22,    10,    16,    31,    24,    18,    28,    15,
-     4,     0,     0,    29,     0,     0,     0,    26,     0,    19,
-    17,    30,     0,    27,     0,     0,     0
+     0,    13,     1,     3,     0,     7,     8,     6,     0,    10,
+     0,     2,     0,     5,     0,    24,    11,    22,     0,     0,
+    19,    20,    21,     9,    15,    30,    23,    17,    27,    14,
+     4,     0,     0,    28,     0,     0,     0,    25,     0,    18,
+    16,    29,     0,    26,     0,     0,     0
 };
 
 static const short yydefgoto[] = {    45,
@@ -618,7 +622,7 @@ static const short yytable[] = {    15,
     21,    22,    23,    15,    16,    13,    14,    18,    33,    19,
     20,    34,    36,    38,    21,    22,    23,    15,    16,    37,
     39,    18,    40,    19,    43,    44,    12,    46,    21,    22,
-    23,    15,    16,   -13,   -13,    18,    47,    10,    42,    30,
+    23,    15,    16,   -12,   -12,    18,    47,    10,    42,    30,
     35,     0,    21,    22,    23,     0,    41
 };
 
@@ -1124,28 +1128,36 @@ YYLABEL(yyreduce)
 
   switch (yyn) {
 
-case 10:
-#line 72 "AssParser.y"
+case 9:
+#line 78 "AssParser.y"
 {std::cout << "Directive :" << yyvsp[-1].sval << std::endl;;
     break;}
+case 10:
+#line 81 "AssParser.y"
+{std::cout << "Label: " << yyvsp[-1].sval << std::endl;;
+    break;}
 case 11:
-#line 75 "AssParser.y"
+#line 82 "AssParser.y"
 {std::cout << "Label: " << yyvsp[-1].sval << std::endl;;
     break;}
 case 12:
-#line 76 "AssParser.y"
-{std::cout << "Label: " << yyvsp[-1].sval << std::endl;;
+#line 85 "AssParser.y"
+{std::cout << "Opcode: " << yyvsp[0].sval << std::endl;;
     break;}
 case 13:
-#line 79 "AssParser.y"
+#line 86 "AssParser.y"
 {std::cout << "Opcode: " << yyvsp[0].sval << std::endl;;
     break;}
-case 14:
-#line 80 "AssParser.y"
-{std::cout << "Opcode: " << yyvsp[0].sval << std::endl;;
+case 19:
+#line 98 "AssParser.y"
+{std::cout << "INTEGER " << yyvsp[0].ival << std::endl;
+							std::ostringstream ss;
+							ss << yyvsp[0].ival;
+							arg_list->push_back(new AssemblyArgument(DIRECT_VALUE,ss.str()));
+						;
     break;}
-case 27:
-#line 101 "AssParser.y"
+case 26:
+#line 111 "AssParser.y"
 {std::cout << "Label:"<< yyvsp[-1].sval << std::endl;;
     break;}
 }
@@ -1352,15 +1364,16 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 112 "AssParser.y"
+#line 122 "AssParser.y"
 
 
 void handle() {
+	program->name = "FUCK";
 	// open a file handle to a particular file:
 	FILE *myfile = fopen("assembly", "r");
 	// make sure it's valid:
 	if (!myfile) {
-		cout << "I can't open a.snazzle.file!" << endl;
+		cout << "I can't open a assembly file!" << endl;
 		return ;
 	}
 	// set flex to read from it instead of defaulting to STDIN:
@@ -1368,7 +1381,7 @@ void handle() {
 
 	// parse through the input until there is no more:
 	do {
-		yyparse();
+		yyparse(&arg_list);
 	} while (!feof(yyin));
 	
 }

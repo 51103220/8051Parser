@@ -2,12 +2,18 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include "AssemblyInfo.h"
 using namespace std;
 
 // stuff from flex that bison needs to know about:
 extern "C" int yylex();
-extern "C" int yyparse();
+extern "C" int yyparse(std::list<AssemblyArgument*> *arg_list);
 extern "C" FILE *yyin;
+
+// stuff to store information:
+AssemblyProgram *program = new AssemblyProgram();
 
 void handle(); 
 void yyerror(const char *s);
@@ -23,6 +29,8 @@ void yyerror(const char *s);
 	float fval;
 	char *sval;
 }
+%define PARSE_PARAM \
+	std::list<AssemblyArgument*> *arg_list
 
 // define the constant-string tokens:
 %token COMMENT
@@ -39,8 +47,6 @@ void yyerror(const char *s);
 %token OPERATOR
 %token LB
 %token RB
-// define the "terminal symbol" token types I'm going to use (in CAPS
-// by convention), and associate each with a field of the union:
 %token <ival> INT
 %token <fval> FLOAT
 %token <sval> STRING
@@ -68,8 +74,7 @@ component:
 	|label 
 	;
 directive:
-	DOT ID
-	|DOT ID arguments {std::cout << "Directive :" << $2 << std::endl;}
+	DOT ID arguments {std::cout << "Directive :" << $2 << std::endl;}
 	;
 label:
 	ID COLON {std::cout << "Label: " << $1 << std::endl;}
@@ -89,7 +94,11 @@ argument:
 	| LEFT_SQ unary_expression RIGHT_SQ
 	;
 literal:
-	INT
+	INT 				{std::cout << "INTEGER " << $1 << std::endl;
+							std::ostringstream ss;
+							ss << $1;
+							arg_list->push_back(new AssemblyArgument(DIRECT_VALUE,ss.str()));
+						}
 	| FLOAT
 	| STRING 
 	| REGISTER 
@@ -112,11 +121,12 @@ binary_expression:
 %%
 
 void handle() {
+	program->name = "FUCK";
 	// open a file handle to a particular file:
 	FILE *myfile = fopen("assembly", "r");
 	// make sure it's valid:
 	if (!myfile) {
-		cout << "I can't open a.snazzle.file!" << endl;
+		cout << "I can't open a assembly file!" << endl;
 		return ;
 	}
 	// set flex to read from it instead of defaulting to STDIN:
@@ -124,7 +134,7 @@ void handle() {
 
 	// parse through the input until there is no more:
 	do {
-		yyparse();
+		yyparse(&arg_list);
 	} while (!feof(yyin));
 	
 }
