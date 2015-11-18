@@ -1374,7 +1374,7 @@ void handle() {
 }
 
 void yyerror(const char *s) {
-	cout << "EEK, parse error!  Message: " << s << endl;
+	cout << "EEK, parse error! Dont Care Message: " << s << endl;
 	// might as well halt now:
 	exit(-1);
 }
