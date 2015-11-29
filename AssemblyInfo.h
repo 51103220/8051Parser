@@ -21,7 +21,8 @@ enum EXP_KIND{
 
 enum INST_KIND{
 	INSTRUCTION = 0,
-	DIRECTIVE
+	DIRECTIVE,
+	LABEL
 };
 
 class AssemblyArgument{
@@ -39,7 +40,8 @@ public:
 class AssemblyExpression{
 public:
 	EXP_KIND exp_kind;
-	std::list<AssemblyArgument*> *ArgList;
+	char const* op;
+	std::list<AssemblyArgument*> *argList;
 public:
 	AssemblyExpression(){}
 	~AssemblyExpression(){}
@@ -87,29 +89,49 @@ public:
 	~AssemblySection(){}
 };
 
+
+
+class AssemblyLine{
+public:
+	std::string name;
+	INST_KIND kind;
+	std::list<AssemblyExpression*> *expList;
+public:
+	AssemblyLine(){
+	
+	}
+	~AssemblyLine(){}
+};
+
 class AssemblyProgram{
 public:
 	std::string name;
-	std::list<AssemblySection*> *SectionList;
+	std::list<AssemblyLine*> lineList;
 public:
 	AssemblyProgram(){
-		name = "NULL";
-		SectionList = NULL;
 	}
 	~AssemblyProgram(){}
 };
 
-// Global Variables help storing datas
-AssemblySection* ass_section;
-std::list<AssemblySection*> section_list;
+class ExpressionList {
+public:	
+	list<AssemblyExpression*> expList;
 
-AssemblyProc* ass_proc;
-std::list<AssemblyProc*> proc_list;
+	ExpressionList() {
 
-AssemblyInstruction* ass_inst;
-std::list<AssemblyInstruction*> inst_list;
+	}
+	~ExpressionList(){}
+};
+class ArgumentList{
+public:
+	std::list<AssemblyArgument*> argList;
 
-AssemblyExpression* ass_exp;
-std::list<AssemblyExpression*> exp_list;
+	ArgumentList(){
 
-std::list<AssemblyArgument*> arg_list;
+	}
+	~ArgumentList(){
+
+	}
+};
+
+

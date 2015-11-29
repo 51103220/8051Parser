@@ -19,7 +19,7 @@ using namespace std;
 \%[A-Za-z_$@0-9]+				{return REGISTER;}
 \(				{return '(';}
 \)				{return ')';}
-[\+\-]			{return OPERATOR;}
+[\+\-]			{yylval.sval = strdup(yytext); return OPERATOR;}
 \[				{return LEFT_SQ;}
 \]				{return RIGHT_SQ;}
 .              ;

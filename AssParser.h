@@ -12,19 +12,33 @@
 
 
  #line 8 "/usr/share/bison++/bison.h"
+#line 1 "AssParser.y"
 
-#line 27 "AssParser.y"
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include "AssemblyInfo.h"
+
+#line 39 "AssParser.y"
 typedef union {
 	int ival;
 	float fval;
 	char *sval;
+	
+	AssemblyLine* line;
+	//list<AssemblyExpression*>* exps;
+	AssemblyExpression* exp;
+	//ArgumentList args;
+	AssemblyArgument* arg;
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
 #ifndef YY_USE_CLASS
 #define YYSTYPE yy_parse_stype
 #endif
 #define YY_parse_PARSE_PARAM  \
-	std::list<AssemblyArgument*> *arg_list
+	AssemblyProgram *ass_program
 
 #line 21 "/usr/share/bison++/bison.h"
  /* %{ and %header{ and %union, during decl */

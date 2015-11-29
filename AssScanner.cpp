@@ -707,7 +707,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 22 "AssScanner.l"
-{return OPERATOR;}
+{yylval.sval = strdup(yytext); return OPERATOR;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
