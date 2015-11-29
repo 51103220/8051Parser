@@ -27,24 +27,19 @@ list<AssemblyArgument*>  *gl_args = new list<AssemblyArgument*>() ;
 
 AssemblyLine* make_line(INST_KIND kind,char* name,list<AssemblyExpression*>  *exps);
 AssemblyExpression* make_expr(EXP_KIND exp_kind, char* op, std::list<AssemblyArgument*> *argList);
+
 void handle(); 
 void yyerror(const char *s);
 %}
 
-// Bison fundamentally works by asking flex to get the next token, which it
-// returns as an object of type "yystype".  But tokens could be of any
-// arbitrary data type!  So we deal with that in Bison by defining a C union
-// holding each of the types of tokens that Flex could return, and have Bison
-// use that union instead of "int" for the definition of "yystype":
+
 %union {
 	int ival;
 	float fval;
 	char *sval;
 	
 	AssemblyLine* line;
-	//list<AssemblyExpression*>* exps;
 	AssemblyExpression* exp;
-	//ArgumentList args;
 	AssemblyArgument* arg;
 }
 
@@ -52,47 +47,45 @@ void yyerror(const char *s);
 	AssemblyProgram *ass_program
 
 // define the constant-string tokens:
+%token PUBLIC
 %token COMMENT
 %token END_LINE
-%token DOT
+%token HECXA
+%token OCTAL
+%token BINARY
 %token <sval> ID
 %token COLON
 %token COMMA
-%token REGISTER
-%token SPECIAL_REGISTER
-%token OPERATOR
-%token LEFT_SQ 
-%token RIGHT_SQ
 %token <sval> OPERATOR
-%token LB
-%token RB
 %token <ival> INT
 %token <fval> FLOAT
 %token <sval> STRING
 
-%type <line> line component directive label instruction
-%type <exp> argument unary_expression 
-%type <arg> literal
+%type <line> line component instruction
+%type <exp> argument expressions
+//%type <arg> literal
+
 %start program
 %%
 
-// Sparc Assembly Grammar 2015
+// 8051 Assembly Grammar 2015
 
 program:
-	lines 
+	PUBLIC ID labels { std::cout << "Start Label" << $2 << std::endl;}
 	;
+labels:
+	label
+	| labels label
+	;
+label:
+	ID COLON lines
+	;	
 lines:
-	line 	{	
-					ass_program->lineList.push_back($1);
-					
-					gl_exps = new list<AssemblyExpression*>();
-					}
-	|lines line {	
-					ass_program->lineList.push_back($2);
-					
-					gl_exps = new list<AssemblyExpression*>();}
+	line 	  { ass_program->lineList.push_back($1);
+				gl_exps = new list<AssemblyExpression*>();}
+	|lines line { ass_program->lineList.push_back($2);
+				  gl_exps = new list<AssemblyExpression*>();}
 
-	
 	;
 line:
 	component COMMENT END_LINE {$$ = $1;}
@@ -100,69 +93,40 @@ line:
 	;
 component:
 	instruction {$$ = $1;}
-	|directive 	{$$ = $1;}
-	|label {$$ = $1;}
-	;
-directive:
-	DOT ID arguments {	
-						
-						$$ = make_line(DIRECTIVE,$2,gl_exps);
-					 }
-	;
-label:
-	ID COLON     {	
-						$$ = make_line(LABEL,$1,gl_exps);
-					 }
-	| DOT ID COLON  {	
-						$$ = make_line(LABEL,$2,gl_exps);
-					 }
 	;
 instruction:
-	ID 	 	{ 
-						$$ = make_line(INSTRUCTION,$1,gl_exps);
-					 }
-	|ID arguments { 
-						$$ = make_line(INSTRUCTION,$1,gl_exps);
-					 }
+	ID 		{ $$ = make_line(INSTRUCTION,$1,gl_exps);}
+	|ID arguments  { $$ = make_line(INSTRUCTION,$1,gl_exps);}
 	;
 arguments:
-	 argument {	gl_exps->push_back($1);
-	 			//gl_args = new list<AssemblyArgument*>();
-	 			}
-	 |arguments COMMA argument {gl_exps->push_back($3);
-	 			//gl_args = new list<AssemblyArgument*>();
-	 			}
-	
+	 argument 	{	gl_exps->push_back($1);}
+	 |arguments COMMA argument {gl_exps->push_back($3);}
 	;
 argument:
-	 unary_expression	{$$ = $1;}
-	| LEFT_SQ unary_expression RIGHT_SQ {$$ = $2;} 
+	expressions	{$$ = $1;} 
 	;
 literal:
 	INT 				{	stringstream ss;
 							ss << $1;
 							gl_args->push_back(new AssemblyArgument(DIRECT_VALUE,ss.str()));
 						}
-	| FLOAT
-	| STRING 
-	| REGISTER 
-	| special_register
+	| STRING
+	| FLOAT 
+	| '#' direct_value
+	| '#' ID
+	| direct_value
+	| '@' ID
 	| ID
-	| DOT OPERATOR ID //Stupid DIRECTIVE ARGUMENT
 ;
-special_register:
-	REGISTER '(' DOT ID ')'
+direct_value:
+	 HECXA
+	| OCTAL
+	| BINARY
+	| INT 
 ;
-unary_expression:
-	binary_expression 
-	|OPERATOR INT {	
-					std::cout << "OPEARTOR INT" << std::endl;
-					$$ = make_expr(UNARY,$1,gl_args);
-					}
-;
-binary_expression:
-	 binary_expression OPERATOR literal 
-	| literal
+expressions:
+	 expressions OPERATOR literal { std::cout << "Binary\n";}
+	| literal	{ std::cout << "Literal\n";}
 	
 ;
 %%
@@ -184,7 +148,7 @@ AssemblyExpression* make_expr(EXP_KIND exp_kind, char* op, std::list<AssemblyArg
 
 void handle() {
 	ass_program = new AssemblyProgram();
-	ass_program->name = "Sparc";
+	ass_program->name = "8051";
 	// open a file handle to a particular file:
 	FILE *myfile = fopen("assembly", "r");
 	// make sure it's valid:

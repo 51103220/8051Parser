@@ -30,7 +30,7 @@ void print_expression(AssemblyExpression* expr){
 
 int main(int, char**) {
 	handle();
-	list<AssemblyArgument*>::iterator ai;
+	/*list<AssemblyArgument*>::iterator ai;
 	list<AssemblyLine*>::iterator li;
 	list<AssemblyExpression*>::iterator ei;
 	if (ass_program){
@@ -55,7 +55,7 @@ int main(int, char**) {
 			}
 			std::cout << "\n";
 		}	
-	}
+	}*/
 		
 	return 0;
 }

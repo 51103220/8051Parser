@@ -21,16 +21,14 @@
 #include <string>
 #include "AssemblyInfo.h"
 
-#line 39 "AssParser.y"
+#line 36 "AssParser.y"
 typedef union {
 	int ival;
 	float fval;
 	char *sval;
 	
 	AssemblyLine* line;
-	//list<AssemblyExpression*>* exps;
 	AssemblyExpression* exp;
-	//ArgumentList args;
 	AssemblyArgument* arg;
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
@@ -207,22 +205,19 @@ typedef
 
 
  #line 169 "/usr/share/bison++/bison.h"
-#define	COMMENT	258
-#define	END_LINE	259
-#define	DOT	260
-#define	ID	261
-#define	COLON	262
-#define	COMMA	263
-#define	REGISTER	264
-#define	SPECIAL_REGISTER	265
-#define	OPERATOR	266
-#define	LEFT_SQ	267
-#define	RIGHT_SQ	268
-#define	LB	269
-#define	RB	270
-#define	INT	271
-#define	FLOAT	272
-#define	STRING	273
+#define	PUBLIC	258
+#define	COMMENT	259
+#define	END_LINE	260
+#define	HECXA	261
+#define	OCTAL	262
+#define	BINARY	263
+#define	ID	264
+#define	COLON	265
+#define	COMMA	266
+#define	OPERATOR	267
+#define	INT	268
+#define	FLOAT	269
+#define	STRING	270
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -271,19 +266,16 @@ public:
   /* static const int token ... */
   
  #line 212 "/usr/share/bison++/bison.h"
+static const int PUBLIC;
 static const int COMMENT;
 static const int END_LINE;
-static const int DOT;
+static const int HECXA;
+static const int OCTAL;
+static const int BINARY;
 static const int ID;
 static const int COLON;
 static const int COMMA;
-static const int REGISTER;
-static const int SPECIAL_REGISTER;
 static const int OPERATOR;
-static const int LEFT_SQ;
-static const int RIGHT_SQ;
-static const int LB;
-static const int RB;
 static const int INT;
 static const int FLOAT;
 static const int STRING;
@@ -295,22 +287,19 @@ static const int STRING;
   enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
   
  #line 215 "/usr/share/bison++/bison.h"
-	,COMMENT=258
-	,END_LINE=259
-	,DOT=260
-	,ID=261
-	,COLON=262
-	,COMMA=263
-	,REGISTER=264
-	,SPECIAL_REGISTER=265
-	,OPERATOR=266
-	,LEFT_SQ=267
-	,RIGHT_SQ=268
-	,LB=269
-	,RB=270
-	,INT=271
-	,FLOAT=272
-	,STRING=273
+	,PUBLIC=258
+	,COMMENT=259
+	,END_LINE=260
+	,HECXA=261
+	,OCTAL=262
+	,BINARY=263
+	,ID=264
+	,COLON=265
+	,COMMA=266
+	,OPERATOR=267
+	,INT=268
+	,FLOAT=269
+	,STRING=270
 
 
 #line 215 "/usr/share/bison++/bison.h"
