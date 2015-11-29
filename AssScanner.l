@@ -7,10 +7,11 @@ using namespace std;
 %}
 %%
 [ \t] ;
+\$ {return END_OF_LINE;}
 \#	{return '#';}
 @ {return '@';}
 [0-9A-Fa-f]+[hH]		{return HECXA;}
-[0-8]+[oO]	{return OCTAL;}
+[0-7]+[oO]	{return OCTAL;}
 [0-1]+[bB]	{return BINARY;}
 (PUBLIC|public) {return PUBLIC;}
 \n        { return END_LINE; }

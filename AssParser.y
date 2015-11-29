@@ -50,6 +50,7 @@ void yyerror(const char *s);
 %token PUBLIC
 %token COMMENT
 %token END_LINE
+%token END_OF_LINE
 %token HECXA
 %token OCTAL
 %token BINARY
@@ -74,22 +75,22 @@ program:
 	PUBLIC ID labels { std::cout << "Start Label" << $2 << std::endl;}
 	;
 labels:
-	label
-	| labels label
+	labels label
+	|label
 	;
 label:
-	ID COLON lines
+	END_LINE ID COLON END_LINE lines { std::cout << "Label " << $2 << std::endl;}
+	|END_LINE ID COLON lines  { std::cout << "Label " << $2 << std::endl;}
 	;	
 lines:
-	line 	  { ass_program->lineList.push_back($1);
-				gl_exps = new list<AssemblyExpression*>();}
-	|lines line { ass_program->lineList.push_back($2);
+	lines line { ass_program->lineList.push_back($2);
 				  gl_exps = new list<AssemblyExpression*>();}
-
+	|line 	  { ass_program->lineList.push_back($1);
+				gl_exps = new list<AssemblyExpression*>();}
 	;
 line:
-	component COMMENT END_LINE {$$ = $1;}
-	| component END_LINE {$$ = $1;}
+	component COMMENT END_LINE   {$$ = $1;}
+	| component  END_LINE{$$ = $1;}
 	;
 component:
 	instruction {$$ = $1;}

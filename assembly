@@ -1,0 +1,8 @@
+PUBLIC aa
+aa: 
+	ad aa, aa
+	bb aa, cc ;dedorwan
+
+bb: aa c
+	bb aa, dd
+	ret
