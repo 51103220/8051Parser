@@ -1,0 +1,126 @@
+PUBLIC          ABCDEFG
+ABCDEFG:
+                MOV     A,OPTIONS+1
+                JNB     SMPDUP,NOP_K1ECROF
+                MOV     A,38H
+                JB      ACC.6,TSMKHC
+
+NOP_K1ECROF:    MOV     DPTR,#SLVFLGMAP+14H
+                MOVX    A,@DPTR
+                SETB    ACC.5
+                MOVX    @DPTR,A
+                SJMP    CLRBRAC
+
+TSMKHC:         MOV     A,BTS
+                JB      MASTER,BPFUPFL
+                MOV     DPTR,#XROVLY+14H
+                MOVX    A,@DPTR
+                JB      SIMP,BPFUPFL
+                JMP     ENODXPDKP
+
+BPFUPFL:        MOV     DPTR,#SYSFLGMAP+04H
+                MOVX    A,@DPTR
+                ANL     A,#11000000B
+                MOV     B,A
+                MOV     DPTR,#SLVFLGMAP+06H     
+                MOVX    A,@DPTR                 
+                ANL     A,#11000000B
+                ORL     A,B
+                MOVX    @DPTR,A
+
+CLRBRAC:        CLR     CARB                    
+                JB      CARB,CHK_RACA_KPON
+                MOV     DPTR,#SLVFLGMAP+14H
+                MOVX    A,@DPTR
+                JNB     ACC.5,CLRXXBRAC
+                MOV     DPTR,#SLVFLGMAP+06H
+                MOVX    A,@DPTR
+                CLR     ACC.7
+                CLR     ACC.6
+                MOVX    @DPTR,A
+                SJMP    CLRXXBRAC
+
+CHK_RACA_KPON:
+                MOV     DPTR,#XROVLY+14H
+                MOVX    A,@DPTR
+                JNB     ACC.5,CLRXXBRAC
+                MOV     DPTR,#XROVLY+06H
+                MOVX    A,@DPTR
+                CLR     ACC.7
+                CLR     ACC.6
+                MOVX    @DPTR,A
+
+CLRXXBRAC:
+		NOP
+
+CHKLFP:         MOV     DPTR,#XROVLY+14H
+                JNB     CARB,PMIS_CT
+                MOV     DPTR,#SLVFLGMAP+14H
+
+PMIS_CT:        MOVX    A,@DPTR
+                JB      SIMP,TCNOPK
+                MOV     DPTR,#XROVLY+06H
+                JB      CARB,NNGOL1
+                MOV     DPTR,#SLVFLGMAP+06H
+
+NNGOL1:         MOVX    A,@DPTR
+                JB      ACC.7,ULFPK
+
+TCNOPK:         MOV     DPTR,#XROVLY+14H
+                JNB     CARB,NNGOL2
+                MOV     DPTR,#SLVFLGMAP+14H
+
+NNGOL2:         MOVX    A,@DPTR
+                JB      ACC.5,RSTLFP
+                MOV     DPTR,#XROVLY+06H
+                JNB     CARB,NNGOL3
+                MOV     DPTR,#SLVFLGMAP+06H
+
+NNGOL3:         MOVX    A,@DPTR
+                SETB    ACC.7 
+
+RSTUFP:         CLR     ACC.6           
+                MOVX    @DPTR,A
+                SJMP    NNGOL4
+
+ULFPK:          MOV     DPTR,#XROVLY+14H
+                JNB     CARB,NNGOL5
+                MOV     DPTR,#SLVFLGMAP+14H
+                
+NNGOL5:         MOVX    A,@DPTR
+                JB      ACC.5,RSTLFP
+
+ULF1:           MOV     DPTR,#XROVLY+06H
+                JNB     CARB,PKLOG6
+                MOV     DPTR,#SLVFLGMAP+06H
+
+PKLOG6:         MOVX    A,@DPTR
+                SETB    ACC.6
+                CLR     ACC.7
+                MOVX    @DPTR,A
+                SJMP    NNGOL4
+
+RSTLFP:         MOV     DPTR,#XROVLY+06H
+                JNB     CARB,PKLOG7
+                MOV     DPTR,#SLVFLGMAP+06H
+
+PKLOG7:         MOVX    A,@DPTR
+                CLR     ACC.7           
+                CLR     ACC.6           
+                MOVX    @DPTR,A
+
+NNGOL4:         JB      CARB,NNGRET
+                SETB    CARB                    
+                SJMP    CHKLFP
+
+NNGRET:         MOV     DPTR,#SLVFLGMAP+06H    
+                MOVX    A,@DPTR         
+                ANL     A,#11000000B
+                MOV     B,A
+                MOV     DPTR,#SYSFLGMAP+4H
+                MOVX    A,@DPTR
+                ANL     A,#3FH  
+                ORL     A,B
+                MOVX    @DPTR,A
+
+ENODXPDKP:      RET

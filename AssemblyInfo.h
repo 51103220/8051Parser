@@ -8,30 +8,39 @@ using namespace std;
 
 enum ARGS_KIND{
 	STRING = 0,
-	REGISTER,
-	SPECIAL_REGISTER,
-	DIRECT_VALUE
+	DIRECT_INT = 1,
+	DIRECT_FLOAT = 2,
+	INDIRECT = 3,
+	IMMEDIATE_INT = 4,
+	IMMEDIATE_ID = 5,
+	ID = 6,
+	OPERATOR = 7,
+	BIT = 8
 };
 
 enum EXP_KIND{
 	LITERAL = 0,
-	UNARY,
-	BINARY
+	UNARY = 1,
+	BINARY = 2 
 };
 
 enum INST_KIND{
 	INSTRUCTION = 0,
-	DIRECTIVE,
-	LABEL
+	DIRECTIVE = 1,
+	LABEL =2
 };
-
+union Arg {
+   int i;
+   float f;
+   char* c;
+};
 class AssemblyArgument{
 public:
-	ARGS_KIND arg_kind;
-	std::string value;	
+	ARGS_KIND kind;
+	Arg value;	
 public:
-	AssemblyArgument(ARGS_KIND kind,std::string v){
-		arg_kind = kind;
+	AssemblyArgument(int i,Arg v){
+		kind = ARGS_KIND(i);
 		value = v;
 	}
 	~AssemblyArgument(){}
@@ -39,9 +48,8 @@ public:
 };
 class AssemblyExpression{
 public:
-	EXP_KIND exp_kind;
-	char const* op;
-	std::list<AssemblyArgument*> *argList;
+	EXP_KIND kind;
+	list<AssemblyArgument*>argList;
 public:
 	AssemblyExpression(){}
 	~AssemblyExpression(){}
@@ -89,11 +97,9 @@ public:
 	~AssemblySection(){}
 };
 
-
-
 class AssemblyLine{
 public:
-	std::string name;
+	char* name;
 	INST_KIND kind;
 	std::list<AssemblyExpression*> *expList;
 public:
@@ -102,36 +108,27 @@ public:
 	}
 	~AssemblyLine(){}
 };
+class AssemblyLabel{
+public:
+	char* name;
+	std::list<AssemblyLine*> *lineList;
+public:
+	AssemblyLabel(){
+	
+	}
+	~AssemblyLabel(){}
+};
+
 
 class AssemblyProgram{
 public:
 	std::string name;
-	std::list<AssemblyLine*> lineList;
+	std::list<AssemblyLabel*> *labelList;
 public:
 	AssemblyProgram(){
 	}
 	~AssemblyProgram(){}
 };
 
-class ExpressionList {
-public:	
-	list<AssemblyExpression*> expList;
-
-	ExpressionList() {
-
-	}
-	~ExpressionList(){}
-};
-class ArgumentList{
-public:
-	std::list<AssemblyArgument*> argList;
-
-	ArgumentList(){
-
-	}
-	~ArgumentList(){
-
-	}
-};
 
 

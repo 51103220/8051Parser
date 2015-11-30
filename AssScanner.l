@@ -11,6 +11,7 @@ char *pEnd;
 \$ {return END_OF_LINE;}
 \#	{return '#';}
 @ {return '@';}
+\. {return '.';}
 [0-9A-Fa-f]+[hH]		{yylval.ival = strtoull(yytext, &pEnd, 16);return HECXA;}
 [0-7]+[oO]	{yylval.ival = strtoull(yytext, &pEnd, 8);return OCTAL;}
 [0-1]+[bB]	{yylval.ival = strtoull(yytext, &pEnd, 2);return BINARY;}

@@ -20,13 +20,13 @@
 #include <sstream>
 #include <string>
 #include "AssemblyInfo.h"
+#include <cstring>
 
-#line 36 "AssParser.y"
+#line 40 "AssParser.y"
 typedef union {
 	int ival;
 	float fval;
 	char *sval;
-	
 	AssemblyLine* line;
 	AssemblyExpression* exp;
 	AssemblyArgument* arg;
