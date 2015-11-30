@@ -1,4 +1,13 @@
 PUBLIC aa
 aa: 
-	add Ac.1, 1 + 2
-	
+	ADD Ac.1, 1 + 2
+	SJMP bb
+	RET
+
+bb:
+	ADD 1, 2
+	JMP cc
+
+cc: 
+	YEAH finish
+		

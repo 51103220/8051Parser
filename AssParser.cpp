@@ -1496,7 +1496,7 @@ void handle() {
 	ass_program = new AssemblyProgram();
 	ass_program->name = "8051";
 	// open a file handle to a particular file:
-	FILE *myfile = fopen("8051Assembly", "r");
+	FILE *myfile = fopen("assembly", "r");
 	// make sure it's valid:
 	if (!myfile) {
 		cout << "I can't open a assembly file!" << endl;
