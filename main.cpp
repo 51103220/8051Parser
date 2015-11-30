@@ -54,7 +54,6 @@ void print_ass(AssemblyProgram* ass_program){
 			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++ ){
 				std::cout << "\t\t Opcode " << (*li)->name << std::endl;
 				std::cout << "\t\t\t Number of Expression: " << (*li)->expList->size() << std::endl;
-				bool first = false;
 				for(ei = (*li)->expList->begin(); ei != (*li)->expList->end(); ei++ ){
 					std::cout << "\t\t\t\t Number of Arguments:" << (*ei)->argList.size() << std::endl;
 					print_arg((*ei));
@@ -73,13 +72,21 @@ list<AssemblyLine*>* iterate_label(AssemblyProgram* &ass_program, char* name){
 	if (ass_program){
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
 			if (strcmp((*lbi)->name,name) == 0){
-				for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++ ){
+				for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end();){
 					if (if_exist((*li)->name, jmps, jsize)){
-						char * label_name = (*li)->expList->front()->argList.front()->value.c;
+						char * label_name;
+						if((*li)->expList->size() != 0){
+							AssemblyExpression * temp_expr = (*li)->expList->front();
+							if(temp_expr->argList.size() != 0){
+								label_name = temp_expr->argList.front()->value.c;
+							}
+						} 
 						li = (*lbi)->lineList->erase(li);				
 						list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
 						(*lbi)->lineList->insert(li,temp_list->begin(),temp_list->end());
-						break;
+					}
+					else {
+						++li;
 					}
 				}
 				return (*lbi)->lineList;
@@ -97,13 +104,21 @@ void append_jumps(AssemblyProgram* &ass_program){
 	list<AssemblyLabel*>::iterator lbi;
 	if (ass_program){
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
-			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++ ){
+			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end();){
 				if (if_exist((*li)->name, jmps, jsize)){
-					char * label_name = (*li)->expList->front()->argList.front()->value.c;
+					char * label_name;
+					if((*li)->expList->size() != 0){
+						AssemblyExpression * temp_expr = (*li)->expList->front();
+						if(temp_expr->argList.size() != 0){
+							label_name = temp_expr->argList.front()->value.c;
+						}
+					} 
 					li = (*lbi)->lineList->erase(li);				
 					list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
 					(*lbi)->lineList->insert(li,temp_list->begin(),temp_list->end());
-					break;
+				}
+				else{
+					++li;
 				}
 
 			}
