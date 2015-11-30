@@ -101,10 +101,13 @@ class AssemblyLine{
 public:
 	char* name;
 	INST_KIND kind;
+	int offset;
+	bool checked;
 	std::list<AssemblyExpression*> *expList;
 public:
 	AssemblyLine(){
-	
+		checked = false;
+		offset = 0;
 	}
 	~AssemblyLine(){}
 };

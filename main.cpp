@@ -2,10 +2,16 @@
 using namespace std;
 const int start_address = 66676;
 const int jsize = 2;
+const int bsize = 2;
 const char *jmps[jsize] = {
                    "SJMP",
                    "JMP",
  };
+const char *brs[bsize] = {
+                   "JNB",
+                   "JB",
+ };
+
 bool if_exist(char * name, const char* arr[], int size){
 	for(int i = 0 ; i < size; i++){
 		if (strcmp(name, arr[i]) == 0) 
@@ -84,6 +90,26 @@ list<AssemblyLine*>* iterate_label(AssemblyProgram* &ass_program, char* name){
 						li = (*lbi)->lineList->erase(li);				
 						list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
 						(*lbi)->lineList->insert(li,temp_list->begin(),temp_list->end());
+						advance(li,temp_list->size());
+					}
+					else if (if_exist((*li)->name, brs, bsize)){
+						if (!(*li)->checked){
+							(*li)->checked = true;
+							char * label_name;
+							if((*li)->expList->size() == 2){
+								AssemblyExpression * temp_expr = (*li)->expList->back();
+								if(temp_expr->argList.size() != 0){
+									label_name = temp_expr->argList.front()->value.c;
+								}
+							} 			
+							list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
+							(*li)->offset = temp_list->size();
+							(*lbi)->lineList->insert(++li,temp_list->begin(),temp_list->end());
+							advance(li,temp_list->size());
+						}
+						else{
+							++li;
+						}
 					}
 					else {
 						++li;
@@ -116,6 +142,27 @@ void append_jumps(AssemblyProgram* &ass_program){
 					li = (*lbi)->lineList->erase(li);				
 					list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
 					(*lbi)->lineList->insert(li,temp_list->begin(),temp_list->end());
+					advance(li,temp_list->size());
+				}
+				else if (if_exist((*li)->name, brs, bsize)){
+						if (!(*li)->checked){
+							char * label_name;
+							(*li)->checked = true;
+							if((*li)->expList->size() == 2){
+								AssemblyExpression * temp_expr = (*li)->expList->back();
+								if(temp_expr->argList.size() != 0){
+									label_name = temp_expr->argList.front()->value.c;
+								}
+							} 			
+							list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
+							(*li)->offset = temp_list->size();
+							(*lbi)->lineList->insert(++li,temp_list->begin(),temp_list->end());
+							
+							advance(li,temp_list->size());
+						}
+						else{
+							++li;
+						}
 				}
 				else{
 					++li;
@@ -132,7 +179,7 @@ int main(int, char**) {
 	handle();
 	std::cout << "-----PARSING RESULT------\n";
 	print_ass(ass_program);
-	std::cout << "-----APPENDING JUMP STATEMENTS---\n";	
+	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
 	print_ass(ass_program);
 	return 0;

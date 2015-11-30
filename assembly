@@ -1,16 +1,21 @@
 PUBLIC aa
-aa: 
-	ADD Ac.1, 1 + 2
-	SJMP bb
-	RET
-
 bb:
 	ADD 1, 2
+	JNB ACC.8, cc
 	JMP cc
 	SJMP dd
 
 cc: 
 	YEAH finish
+	JB ACC.8, ee
+	JMP ff
 
 dd: 
 	aa bb, cc	
+
+ee: 
+	done finish
+
+ff: 
+	what ever
+	
