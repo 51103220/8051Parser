@@ -51,9 +51,9 @@ void yyerror(const char *s);
 %token COMMENT
 %token END_LINE
 %token END_OF_LINE
-%token HECXA
-%token OCTAL
-%token BINARY
+%token <ival> HECXA
+%token <ival> OCTAL
+%token <ival> BINARY
 %token <sval> ID
 %token COLON
 %token COMMA
@@ -62,6 +62,7 @@ void yyerror(const char *s);
 %token <fval> FLOAT
 %token <sval> STRING
 
+%type <ival> direct_value
 %type <line> line component instruction
 %type <exp> argument expressions
 //%type <arg> literal
@@ -107,23 +108,19 @@ argument:
 	expressions	{$$ = $1;} 
 	;
 literal:
-	INT 				{	stringstream ss;
-							ss << $1;
-							gl_args->push_back(new AssemblyArgument(DIRECT_VALUE,ss.str()));
-						}
-	| STRING
-	| FLOAT 
-	| '#' direct_value
-	| '#' ID
-	| direct_value
-	| '@' ID
-	| ID
+	| STRING {std::cout << "String " << $1 << std::endl}
+	| FLOAT {std::cout << "FLOAT " << $1 << std::endl;}
+	| '#' direct_value {std::cout << "Immediate Value " << $2 << std::endl;}
+	| '#' ID   {std::cout << "Immediate Value " << $2 << std::endl;}
+	| direct_value {std::cout << "Direct Value " << $1 << std::endl;}
+	| '@' ID {std::cout << "Indirect value " << $2 << std::endl;}
+	| ID  {std::cout << "ID " << $1 << std::endl;}
 ;
 direct_value:
-	 HECXA
-	| OCTAL
-	| BINARY
-	| INT 
+	 HECXA	{$$ = $1;}
+	| OCTAL {$$ = $1;}
+	| BINARY {$$ = $1;}
+	| INT {$$ = $1;}
 ;
 expressions:
 	 expressions OPERATOR literal { std::cout << "Binary\n";}

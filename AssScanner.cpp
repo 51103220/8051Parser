@@ -420,7 +420,8 @@ char *yytext;
 #include "AssParser.h"
 using namespace std;
 #define YY_DECL extern "C" int yylex()
-#line 424 "AssScanner.cpp"
+char *pEnd;
+#line 425 "AssScanner.cpp"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -582,9 +583,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 8 "AssScanner.l"
+#line 9 "AssScanner.l"
 
-#line 588 "AssScanner.cpp"
+#line 589 "AssScanner.cpp"
 
 	if ( yy_init )
 		{
@@ -669,110 +670,110 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 9 "AssScanner.l"
+#line 10 "AssScanner.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 10 "AssScanner.l"
+#line 11 "AssScanner.l"
 {return END_OF_LINE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 11 "AssScanner.l"
+#line 12 "AssScanner.l"
 {return '#';}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 12 "AssScanner.l"
+#line 13 "AssScanner.l"
 {return '@';}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 13 "AssScanner.l"
-{return HECXA;}
+#line 14 "AssScanner.l"
+{yylval.ival = strtoull(yytext, &pEnd, 16);return HECXA;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 14 "AssScanner.l"
-{return OCTAL;}
+#line 15 "AssScanner.l"
+{yylval.ival = strtoull(yytext, &pEnd, 8);return OCTAL;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 15 "AssScanner.l"
-{return BINARY;}
+#line 16 "AssScanner.l"
+{yylval.ival = strtoull(yytext, &pEnd, 2);return BINARY;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 16 "AssScanner.l"
+#line 17 "AssScanner.l"
 {return PUBLIC;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 17 "AssScanner.l"
+#line 18 "AssScanner.l"
 { return END_LINE; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 18 "AssScanner.l"
+#line 19 "AssScanner.l"
 { return COMMENT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 19 "AssScanner.l"
+#line 20 "AssScanner.l"
 {yylval.sval=strdup(yytext);return ID;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 20 "AssScanner.l"
+#line 21 "AssScanner.l"
 {return COLON;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 21 "AssScanner.l"
+#line 22 "AssScanner.l"
 {return COMMA;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 22 "AssScanner.l"
+#line 23 "AssScanner.l"
 { yylval.fval = atof(yytext); return FLOAT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 23 "AssScanner.l"
+#line 24 "AssScanner.l"
 { yylval.ival = atoi(yytext); return INT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 24 "AssScanner.l"
+#line 25 "AssScanner.l"
 { yylval.sval = strdup(yytext); return STRING;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 25 "AssScanner.l"
+#line 26 "AssScanner.l"
 {return '(';}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 26 "AssScanner.l"
+#line 27 "AssScanner.l"
 {return ')';}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 27 "AssScanner.l"
+#line 28 "AssScanner.l"
 {yylval.sval = strdup(yytext); return OPERATOR;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 28 "AssScanner.l"
+#line 29 "AssScanner.l"
 ;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 29 "AssScanner.l"
+#line 30 "AssScanner.l"
 ECHO;
 	YY_BREAK
-#line 776 "AssScanner.cpp"
+#line 777 "AssScanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1662,5 +1663,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 29 "AssScanner.l"
+#line 30 "AssScanner.l"
 

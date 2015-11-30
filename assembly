@@ -1,8 +1,8 @@
 PUBLIC aa
 aa: 
-	ad aa, aa
-	bb aa, cc ;dedorwan
+	ad 03h, @P0
+	bb 1010B, #12o ;dedorewan
 
-bb: aa c
-	bb aa, dd
+bb: aa 1Fh, 1 + 2
+	bb 1.2, "dedo"
 	ret
