@@ -1,6 +1,6 @@
 #include "AssParser.cpp"
 using namespace std;
-
+unsigned int start_address = 66676;
 const int jsize = 2;
 const int bsize = 2;
 const char *jmps[jsize] = {
@@ -289,20 +289,35 @@ void handle_binary(AssemblyProgram* &ass_program){
 		}
 
 	}
-
+}
+void address_label(AssemblyProgram* &ass_program){
+	list<AssemblyLabel*>::iterator lbi;
+	unsigned int last_address = start_address;
+	if (ass_program){
+		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
+			(*lbi)->address = last_address;
+			last_address = (*lbi)->address + (*lbi)->lineList->size()*4;
+		}
+	}
 }
 int main(int, char**) {
 	std::cout << "------START PARSING------\n";
 	handle();
 	std::cout << "-----PARSING RESULT------\n";
-	print_ass(ass_program);
+	//print_ass(ass_program);
 	std::cout << "-----HANDLE BINARY EXPRESSION---\n";
 	handle_binary(ass_program);
-	print_ass(ass_program);
+	//print_ass(ass_program);
 	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
 	print_ass(ass_program);
-	
-
+	std::cout << "---ADDRESSING LABEL---\n";
+	address_label(ass_program);
+	list<AssemblyLabel*>::iterator lbi;
+	if (ass_program){
+		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
+			std::cout << (*lbi)->name << " : " << (*lbi)->address << std::endl;
+		}
+	}
 	return 0;
 }

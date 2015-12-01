@@ -76,33 +76,6 @@ public:
 	~AssemblyInstruction(){}
 };
 
-class AssemblyProc{
-public:
-	std::string* name;
-	unsigned address;
-	std::list<AssemblyInstruction*> *InstList;
-public:
-	AssemblyProc(){
-		name = NULL;
-		address = 0;
-		InstList = NULL;
-	}
-	~AssemblyProc(){}
-};
-
-class AssemblySection{
-public:
-	std::string* name;
-	std::list<AssemblyExpression*> *ExpList;
-	std::list<AssemblyProc*> *ProcList;
-public:
-	AssemblySection(){
-		name = NULL;
-		ExpList = NULL;
-		ProcList =NULL;
-	}
-	~AssemblySection(){}
-};
 
 class AssemblyLine{
 public:
@@ -120,7 +93,8 @@ public:
 };
 class AssemblyLabel{
 public:
-	char* name;
+	const char* name;
+	unsigned int address;
 	std::list<AssemblyLine*> *lineList;
 public:
 	AssemblyLabel(){
