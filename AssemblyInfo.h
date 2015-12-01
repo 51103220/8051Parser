@@ -50,6 +50,10 @@ public:
 		kind = ARGS_KIND(i);
 		value = v;
 	}
+	void change(int i,Arg v){
+		kind = ARGS_KIND(i);
+		value = v;
+	}
 	~AssemblyArgument(){}
 
 };

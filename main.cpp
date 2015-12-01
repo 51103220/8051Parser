@@ -3,6 +3,8 @@ using namespace std;
 unsigned int start_address = 66676;
 const int jsize = 2;
 const int bsize = 2;
+const int btsize = 4;
+const int rsize = 2;
 const char *jmps[jsize] = {
                    "SJMP",
                    "JMP",
@@ -11,6 +13,16 @@ const char *brs[bsize] = {
                    "JNB",
                    "JB",
  };
+const char *bit[btsize] = {
+				"CLR",
+                "SETB",
+                "JNB",
+                "JB"
+};
+const char *registers[rsize] = {
+				"A",
+                "C",
+};
 std::map<char*,int> undefined;
 bool if_defined(char* name){
 	std::map<char*,int>::iterator it;
@@ -202,7 +214,7 @@ void handle_binary(AssemblyProgram* &ass_program){
 						temp_expr t_e;
 						bool LHS = false;
 						bool imm = false;
-						int rand_value = 100;
+						int rand_value = rand() % 1000 + 100;
 						for(ai = (*ei)->argList.begin(); ai != (*ei)->argList.end(); ai++ ){
 							switch ((*ai)->kind){
 								case 7: //OPERATOR
@@ -290,6 +302,51 @@ void handle_binary(AssemblyProgram* &ass_program){
 
 	}
 }
+void handle_bit(AssemblyProgram* &ass_program){
+	list<AssemblyArgument*>::iterator ai;
+	list<AssemblyLine*>::iterator li;
+	list<AssemblyExpression*>::iterator ei;
+	list<AssemblyLabel*>::iterator lbi;
+	if (ass_program){
+		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
+			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++){
+				if(if_exist((*li)->name, bit, btsize)){
+					if ((*li)->expList->size() > 0){
+						AssemblyExpression* temp_expr = (*li)->expList->front();
+						if(temp_expr->argList.size()>0){
+							AssemblyArgument* temp_arg = temp_expr->argList.front();
+							int rand_value = rand() % 1000 + 100;
+							int result = 1;
+							switch(temp_arg->kind){
+								case 6: //ID
+									if(!if_exist(temp_arg->value.c,registers,rsize)){
+										if(!if_defined(temp_arg->value.c)){
+											undefined[temp_arg->value.c] = rand_value;
+										}	
+										result = int_defined(temp_arg->value.c);
+									}
+									
+									break;
+								case 8: //BIT
+									if(!if_defined(temp_arg->value.c)){
+										undefined[temp_arg->value.c] = rand_value;
+									}	
+										result = int_defined(temp_arg->value.c);
+									break;
+								default:
+									break;
+							}
+							Arg a;
+							a.i = result;
+							temp_arg->change(1,a); 
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
 void address_label(AssemblyProgram* &ass_program){
 	list<AssemblyLabel*>::iterator lbi;
 	unsigned int last_address = start_address;
@@ -307,6 +364,8 @@ int main(int, char**) {
 	//print_ass(ass_program);
 	std::cout << "-----HANDLE BINARY EXPRESSION---\n";
 	handle_binary(ass_program);
+	std::cout << "-----HANDLE BIT ---\n";
+	handle_bit(ass_program);
 	//print_ass(ass_program);
 	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
