@@ -134,7 +134,8 @@ argument:
 				expr = new AssemblyExpression();}
 	;
 literal:
-	| STRING {std::cout << "String " << $1 << std::endl;
+	| STRING {	
+				std::cout << "String " << $1 << std::endl;
 				Arg a;
 				a.c = $1;
 				$$ = new AssemblyArgument(0 , a);

@@ -17,6 +17,13 @@ enum ARGS_KIND{
 	OPERATOR = 7,
 	BIT = 8
 };
+struct temp_expr
+{
+	char* op;
+	int LHS;
+	int RHS;
+	int value;   
+}; 
 
 enum EXP_KIND{
 	LITERAL = 0,

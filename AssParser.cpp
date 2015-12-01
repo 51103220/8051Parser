@@ -573,8 +573,8 @@ static const short yyrhs[] = {     3,
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
     78,    84,    86,    88,    95,   102,   104,   106,   108,   110,
-   113,   120,   128,   130,   132,   136,   137,   142,   146,   151,
-   156,   161,   166,   170,   181,   183,   184,   185,   187,   195
+   113,   120,   128,   130,   132,   136,   137,   143,   147,   152,
+   157,   162,   167,   171,   182,   184,   185,   186,   188,   196
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","PUBLIC","COMMENT",
@@ -1189,21 +1189,22 @@ case 15:
     break;}
 case 17:
 #line 137 "AssParser.y"
-{std::cout << "String " << yyvsp[0].sval << std::endl;
+{	
+				std::cout << "String " << yyvsp[0].sval << std::endl;
 				Arg a;
 				a.c = yyvsp[0].sval;
 				yyval.arg = new AssemblyArgument(0 , a);
 				;
     break;}
 case 18:
-#line 142 "AssParser.y"
+#line 143 "AssParser.y"
 {std::cout << "FLOAT " << yyvsp[0].fval << std::endl;
 				Arg a;
 				a.f = yyvsp[0].fval;
 				yyval.arg = new AssemblyArgument(2,a);;
     break;}
 case 19:
-#line 146 "AssParser.y"
+#line 147 "AssParser.y"
 {std::cout << "Immediate Value " << yyvsp[0].ival << std::endl;
 						Arg a;
 						a.i = yyvsp[0].ival;
@@ -1211,7 +1212,7 @@ case 19:
 						;
     break;}
 case 20:
-#line 151 "AssParser.y"
+#line 152 "AssParser.y"
 {std::cout << "Immediate Value " << yyvsp[0].sval << std::endl;
 				Arg a;
 				a.c = yyvsp[0].sval;
@@ -1219,7 +1220,7 @@ case 20:
 			   ;
     break;}
 case 21:
-#line 156 "AssParser.y"
+#line 157 "AssParser.y"
 {std::cout << "Direct Value " << yyvsp[0].ival << std::endl;
 					Arg a;
 					a.i = yyvsp[0].ival;
@@ -1227,7 +1228,7 @@ case 21:
 					;
     break;}
 case 22:
-#line 161 "AssParser.y"
+#line 162 "AssParser.y"
 {std::cout << "Indirect value " << yyvsp[0].sval << std::endl;
 					Arg a;
 					a.c = yyvsp[0].sval;
@@ -1235,14 +1236,14 @@ case 22:
 					;
     break;}
 case 23:
-#line 166 "AssParser.y"
+#line 167 "AssParser.y"
 {std::cout << "ID " << yyvsp[0].sval << std::endl;
 					Arg a;
 					a.c = yyvsp[0].sval;
 					yyval.arg = new AssemblyArgument(6,a);;
     break;}
 case 24:
-#line 170 "AssParser.y"
+#line 171 "AssParser.y"
 { std::cout << "BIT" << std::endl;
 					std::stringstream ss;
   					ss << yyvsp[-2].sval << '.' << yyvsp[0].ival;
@@ -1255,23 +1256,23 @@ case 24:
 					yyval.arg = new AssemblyArgument(8,a);;
     break;}
 case 25:
-#line 182 "AssParser.y"
-{yyval.ival = yyvsp[0].ival;;
-    break;}
-case 26:
 #line 183 "AssParser.y"
 {yyval.ival = yyvsp[0].ival;;
     break;}
-case 27:
+case 26:
 #line 184 "AssParser.y"
 {yyval.ival = yyvsp[0].ival;;
     break;}
-case 28:
+case 27:
 #line 185 "AssParser.y"
 {yyval.ival = yyvsp[0].ival;;
     break;}
+case 28:
+#line 186 "AssParser.y"
+{yyval.ival = yyvsp[0].ival;;
+    break;}
 case 29:
-#line 188 "AssParser.y"
+#line 189 "AssParser.y"
 { 
 	 								Arg a;
 	 								a.c = yyvsp[-1].sval;
@@ -1281,7 +1282,7 @@ case 29:
 	 								expr->argList.push_back(yyvsp[0].arg);;
     break;}
 case 30:
-#line 195 "AssParser.y"
+#line 196 "AssParser.y"
 { expr->argList.push_back(yyvsp[0].arg);;
     break;}
 }
@@ -1488,7 +1489,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 198 "AssParser.y"
+#line 199 "AssParser.y"
 
 
 

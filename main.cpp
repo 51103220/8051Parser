@@ -1,6 +1,6 @@
 #include "AssParser.cpp"
 using namespace std;
-const int start_address = 66676;
+
 const int jsize = 2;
 const int bsize = 2;
 const char *jmps[jsize] = {
@@ -11,7 +11,23 @@ const char *brs[bsize] = {
                    "JNB",
                    "JB",
  };
-
+std::map<char*,int> undefined;
+bool if_defined(char* name){
+	std::map<char*,int>::iterator it;
+	for(it = undefined.begin();it != undefined.end(); ++it ){
+		if (strcmp(it->first,name) == 0)
+			return true;
+	}
+	return false;
+}
+int int_defined(char *name){
+	std::map<char*,int>::iterator it;
+	for(it = undefined.begin();it != undefined.end(); ++it ){
+		if (strcmp(it->first,name) == 0)
+			return it->second;
+	}
+	return 0;
+}
 bool if_exist(char * name, const char* arr[], int size){
 	for(int i = 0 ; i < size; i++){
 		if (strcmp(name, arr[i]) == 0) 
@@ -105,7 +121,7 @@ list<AssemblyLine*>* iterate_label(AssemblyProgram* &ass_program, char* name){
 							list<AssemblyLine*> *temp_list = iterate_label(ass_program, label_name);
 							(*li)->offset = temp_list->size();
 							(*lbi)->lineList->insert(++li,temp_list->begin(),temp_list->end());
-							advance(li,temp_list->size());
+							advance(li,temp_list->size()+1);
 						}
 						else{
 							++li;
@@ -158,7 +174,7 @@ void append_jumps(AssemblyProgram* &ass_program){
 							(*li)->offset = temp_list->size();
 							(*lbi)->lineList->insert(++li,temp_list->begin(),temp_list->end());
 							
-							advance(li,temp_list->size());
+							advance(li,temp_list->size()+1);
 						}
 						else{
 							++li;
@@ -173,14 +189,120 @@ void append_jumps(AssemblyProgram* &ass_program){
 
 	}
 }
+void handle_binary(AssemblyProgram* &ass_program){
+	list<AssemblyArgument*>::iterator ai;
+	list<AssemblyLine*>::iterator li;
+	list<AssemblyExpression*>::iterator ei;
+	list<AssemblyLabel*>::iterator lbi;
+	if (ass_program){
+		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
+			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++){
+				for(ei = (*li)->expList->begin(); ei != (*li)->expList->end(); ei++ ){
+					if((*ei)->kind == 2){
+						temp_expr t_e;
+						bool LHS = false;
+						bool imm = false;
+						int rand_value = 100;
+						for(ai = (*ei)->argList.begin(); ai != (*ei)->argList.end(); ai++ ){
+							switch ((*ai)->kind){
+								case 7: //OPERATOR
+									t_e.op = (*ai)->value.c;
+									break;
+								case 5: //IMMEDIATE ID
+									imm = true;
+									if(!LHS){
+										LHS = true;
+										if(if_defined((*ai)->value.c)){
+											t_e.LHS = int_defined((*ai)->value.c);
+										}
+										else{
+											undefined[(*ai)->value.c] = rand_value;
+											t_e.LHS = int_defined((*ai)->value.c);
+										}
+									}
+									else{
+										if(if_defined((*ai)->value.c)){
+											t_e.RHS = int_defined((*ai)->value.c);
+										}
+										else{
+											undefined[(*ai)->value.c] = rand_value;
+											t_e.RHS = int_defined((*ai)->value.c);
+										}
+									}
+									break;
+								case 6: // ID
+									if(!LHS){
+										LHS = true;
+										if(if_defined((*ai)->value.c)){
+											t_e.LHS = int_defined((*ai)->value.c);											
+										}
+										else{ 
+											undefined[(*ai)->value.c] = rand_value;
+											t_e.LHS = int_defined((*ai)->value.c);
+										}
+									}
+									else{
+										if(if_defined((*ai)->value.c)){
+											t_e.RHS = int_defined((*ai)->value.c);
+										}
+										else{
+											undefined[(*ai)->value.c] = rand_value;
+											t_e.RHS = int_defined((*ai)->value.c);
+										}
+									}
+									break;
+								case 1: //DIRECT_INT
+								case 4: //IMMEDIATE_INT
+									if(!LHS)
+										t_e.LHS = (*ai)->value.i;
+									else
+										t_e.RHS = (*ai)->value.i;
+									break;
+								default:
+									break;
+							}
+						}
+						if (strcmp(t_e.op,"+") == 0) {
+							t_e.value = t_e.LHS + t_e.RHS;
+						}
+						else if (strcmp(t_e.op,"-") == 0) {
+							t_e.value = t_e.LHS - t_e.RHS;
+						}
+						else if (strcmp(t_e.op,"*") == 0) {
+							t_e.value = t_e.LHS * t_e.RHS;
+						}
+						else if (strcmp(t_e.op,"/") == 0) {
+							t_e.value = t_e.LHS / t_e.RHS;
+						}
 
+						(*ei)->argList.clear(); //Remove all elements;
+						Arg a;
+						a.i = t_e.value;
+						if (imm)
+							(*ei)->argList.push_back(new AssemblyArgument(4,a));
+						else
+							(*ei)->argList.push_back(new AssemblyArgument(1,a)); 
+					
+					}
+				}
+			}
+		}
+
+	}
+
+}
 int main(int, char**) {
 	std::cout << "------START PARSING------\n";
 	handle();
 	std::cout << "-----PARSING RESULT------\n";
 	print_ass(ass_program);
+	std::cout << "-----HANDLE BINARY EXPRESSION---\n";
+	handle_binary(ass_program);
+	print_ass(ass_program);
 	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
 	print_ass(ass_program);
+	
+
 	return 0;
 }

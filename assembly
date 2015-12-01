@@ -1,19 +1,25 @@
-PUBLIC aa
+PUBLIC bb
 bb:
+	MOV A, dedorewan + 1
+	MOV AA, dedorewan + 3
+	MOV X, #yeah + 150
+	MOV X, #yeah + 250
 	ADD 1, 2
 	JNB ACC.8, cc
-	JMP cc
-	SJMP dd
+	MOV A, dedorewan + 250
+	ADD a
+	Add b
 
 cc: 
+	MOV A, #yeah + 450
+	MOV A, #yeah + 1000
 	YEAH finish
-	JB ACC.8, ee
 	JMP ff
 
 dd: 
 	aa bb, cc	
 
-ee: 
+ee:
 	done finish
 
 ff: 
