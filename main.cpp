@@ -359,7 +359,7 @@ void address_label(AssemblyProgram* &ass_program){
 }
 int main(int, char**) {
 	std::cout << "------START PARSING------\n";
-	handle();
+	handle("8051Assembly");
 	std::cout << "-----PARSING RESULT------\n";
 	//print_ass(ass_program);
 	std::cout << "-----HANDLE BINARY EXPRESSION---\n";

@@ -199,11 +199,11 @@ expressions:
 %%
 
 
-void handle() {
+void handle(const char* file) {
 	ass_program = new AssemblyProgram();
 	ass_program->name = "8051";
 	// open a file handle to a particular file:
-	FILE *myfile = fopen("assembly", "r");
+	FILE *myfile = fopen(file, "r");
 	// make sure it's valid:
 	if (!myfile) {
 		cout << "I can't open a assembly file!" << endl;
