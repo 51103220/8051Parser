@@ -3,7 +3,7 @@ bb:
 	MOV A, Option + 1
 	MOV R7, #someFlag + 100
 	SETB ACC.7
-	CLR ACC.8
+	CLR P0.8
 	JNB ACC.8, cc
 
 cc: 

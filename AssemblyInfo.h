@@ -24,7 +24,10 @@ struct temp_expr
 	int RHS;
 	int value;   
 }; 
-
+struct bits{
+	char* reg;
+	unsigned pos;
+};
 enum EXP_KIND{
 	LITERAL = 0,
 	UNARY = 1,
@@ -40,6 +43,7 @@ union Arg {
    int i;
    float f;
    char* c;
+   bits bit;
 };
 class AssemblyArgument{
 public:
@@ -112,6 +116,7 @@ class AssemblyProgram{
 public:
 	std::string name;
 	std::list<AssemblyLabel*> *labelList;
+	std::list<char*> bitReg;
 public:
 	AssemblyProgram(){
 	}

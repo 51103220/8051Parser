@@ -298,30 +298,29 @@ void handle_bit(AssemblyProgram* &ass_program){
 						AssemblyExpression* temp_expr = (*li)->expList->front();
 						if(temp_expr->argList.size()>0){
 							AssemblyArgument* temp_arg = temp_expr->argList.front();
-							int rand_value = rand() % 1000 + 100;
-							int result = 1;
 							switch(temp_arg->kind){
 								case 6: //ID
-									if(!if_exist(temp_arg->value.c,registers,rsize)){
-										if(!if_defined(temp_arg->value.c)){
-											undefined[temp_arg->value.c] = rand_value;
-										}	
-										result = int_defined(temp_arg->value.c);
-									}
-									
-									break;
-								case 8: //BIT
-									if(!if_defined(temp_arg->value.c)){
-										undefined[temp_arg->value.c] = rand_value;
-									}	
-										result = int_defined(temp_arg->value.c);
+									temp_arg->change(8,temp_arg->value);
 									break;
 								default:
 									break;
 							}
+							//---WHOLE STUFF FOR BIT HANDLING
+							std::string temp(temp_arg->value.c);
+							char c =  temp.at(temp.size()-1);
+							int num = c - '0';
+							temp =  temp.substr(0, temp.size()-1);
+							temp =  temp.substr(0, temp.size()-1);
+							if (temp == "ACC")
+								temp = "A";
+							char *cstr = new char[temp.length() + 1];
+							strcpy(cstr, temp.c_str());
 							Arg a;
-							a.i = result;
-							temp_arg->change(1,a); 
+							a.bit.reg = cstr;
+							a.bit.pos = num;
+							temp_arg->change(8,a);
+							ass_program->bitReg.push_back(cstr);
+							//-------------------------------
 						}
 					}
 				}
@@ -343,13 +342,12 @@ void address_label(AssemblyProgram* &ass_program){
 int main(int, char**) {
 	std::cout << "------START PARSING------\n";
 	handle("assembly2");
-
 	std::cout << "-----HANDLE BINARY EXPRESSION---\n";
 	init_defined();
 	handle_binary(ass_program);
 
 	std::cout << "-----HANDLE BIT ---\n";
-	//handle_bit(ass_program);
+	handle_bit(ass_program);
 
 	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
@@ -365,6 +363,12 @@ int main(int, char**) {
 	if (ass_program){
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
 			std::cout << (*lbi)->name << " : " << (*lbi)->address << std::endl;
+		}
+	}
+	std::list<char*>::iterator br;
+	if(ass_program){
+		for(br = ass_program->bitReg.begin();br != ass_program->bitReg.end(); ++br){
+			std::cout <<  " REGISTER IS BIT PRESENTATOR " << (*br) << std::endl;
 		}
 	}
 
