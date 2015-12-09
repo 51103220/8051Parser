@@ -1,10 +1,12 @@
 #include "AssParser.cpp"
+#include <fstream>
+ofstream myfile;
 using namespace std;
 unsigned int start_address = 66676;
 const int jsize = 2;
 const int bsize = 2;
 const int btsize = 4;
-const int rsize = 2;
+const int rsize = 30;
 const char *jmps[jsize] = {
                    "SJMP",
                    "JMP",
@@ -20,10 +22,52 @@ const char *bit[btsize] = {
                 "JB"
 };
 const char *registers[rsize] = {
+				"R0",
+				"R1",
+				"R2",
+				"R3",
+				"R4",
+				"R5",
+				"R6",
+				"R7",
 				"A",
+				"B",
                 "C",
+                "DPTR",
+                "AB",
+                "P0",
+                "P1",
+                "P2",
+                "P3",
+                "DPL",
+                "DPH",
+                "PCON",
+                "TCON",
+                "TMOD",
+                "TL0",
+                "TL1",
+                "TH0",
+                "SCON",
+                "SBUF",
+                "IE",
+                "IP",
+                "PSW"
 };
 std::map<char*,int> undefined;
+std::map<char *, char *> defined;
+void init_defined(){
+	defined["Option"] = "R1";
+	defined["someFlag"] = "R2";
+	defined["DRAB"] = "ACC.1";
+}
+char * defined_value(char * name){
+	std::map<char *,char *>::iterator it;
+	for(it = defined.begin();it != defined.end(); ++it ){
+		if (strcmp(it->first,name) == 0)
+			return it->second;
+	}
+	return NULL;
+}
 bool if_defined(char* name){
 	std::map<char*,int>::iterator it;
 	for(it = undefined.begin();it != undefined.end(); ++it ){
@@ -50,6 +94,7 @@ bool if_exist(char * name, const char* arr[], int size){
 void print_arg(AssemblyExpression *expr){
 	list<AssemblyArgument*>::iterator ai;
 	std::cout << "\t\t\t\t\t "; 
+	myfile << "\t\t\t\t\t ";
 	for(ai = expr->argList.begin(); ai != expr->argList.end(); ai++ ){
 			switch ((*ai)->kind){
 				case 0:
@@ -58,16 +103,20 @@ void print_arg(AssemblyExpression *expr){
 				case 6:
 				case INDIRECT:
 					std::cout << (*ai)->value.c << " ";
+					myfile << (*ai)->value.c << " ";
 					break;
 				case DIRECT_FLOAT:
 					std::cout << (*ai)->value.f << " ";
+					myfile << (*ai)->value.f << " ";
 					break;
 				case IMMEDIATE_INT:
 				case DIRECT_INT:
 					std::cout << (*ai)->value.i << " ";
+					myfile << (*ai)->value.i << " ";
 					break;
 				case 8:
-					std::cout << (*ai)->value.c  << " "; 
+					std::cout << (*ai)->value.c  << " ";
+					myfile << (*ai)->value.c  << " ";
 					break;
 				default:
 					break;
@@ -84,14 +133,17 @@ void print_ass(AssemblyProgram* ass_program){
 		std::cout << "***Number of labels " << ass_program->labelList->size() << std::endl;
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
 			std::cout << "\t Label name: " << (*lbi)->name << std::endl;
+			myfile << (*lbi)->name << std::endl;
 			std::cout << "\t Number of lines: " << (*lbi)->lineList->size() << std::endl;
 			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++ ){
 				std::cout << "\t\t Opcode " << (*li)->name << std::endl;
+				myfile << "\t\t" << (*li)->name << std::endl;
 				std::cout << "\t\t\t Number of Expression: " << (*li)->expList->size() << std::endl;
 				for(ei = (*li)->expList->begin(); ei != (*li)->expList->end(); ei++ ){
 					std::cout << "\t\t\t\t Number of Arguments:" << (*ei)->argList.size() << std::endl;
 					print_arg((*ei));
-					std::cout << std::endl; 
+					std::cout << std::endl;
+					myfile << std::endl; 
 				}
 			}
 		}
@@ -210,90 +262,21 @@ void handle_binary(AssemblyProgram* &ass_program){
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
 			for(li = (*lbi)->lineList->begin(); li != (*lbi)->lineList->end(); li++){
 				for(ei = (*li)->expList->begin(); ei != (*li)->expList->end(); ei++ ){
-					if((*ei)->kind == 2){
-						temp_expr t_e;
-						bool LHS = false;
-						bool imm = false;
-						int rand_value = rand() % 1000 + 100;
+					{
 						for(ai = (*ei)->argList.begin(); ai != (*ei)->argList.end(); ai++ ){
 							switch ((*ai)->kind){
-								case 7: //OPERATOR
-									t_e.op = (*ai)->value.c;
-									break;
 								case 5: //IMMEDIATE ID
-									imm = true;
-									if(!LHS){
-										LHS = true;
-										if(if_defined((*ai)->value.c)){
-											t_e.LHS = int_defined((*ai)->value.c);
-										}
-										else{
-											undefined[(*ai)->value.c] = rand_value;
-											t_e.LHS = int_defined((*ai)->value.c);
-										}
-									}
-									else{
-										if(if_defined((*ai)->value.c)){
-											t_e.RHS = int_defined((*ai)->value.c);
-										}
-										else{
-											undefined[(*ai)->value.c] = rand_value;
-											t_e.RHS = int_defined((*ai)->value.c);
-										}
-									}
-									break;
 								case 6: // ID
-									if(!LHS){
-										LHS = true;
-										if(if_defined((*ai)->value.c)){
-											t_e.LHS = int_defined((*ai)->value.c);											
-										}
-										else{ 
-											undefined[(*ai)->value.c] = rand_value;
-											t_e.LHS = int_defined((*ai)->value.c);
-										}
+									if(!if_exist((*ai)->value.c,registers,rsize)){
+										char * n = defined_value((*ai)->value.c);
+										if (n)
+											(*ai)->value.c = n;
 									}
-									else{
-										if(if_defined((*ai)->value.c)){
-											t_e.RHS = int_defined((*ai)->value.c);
-										}
-										else{
-											undefined[(*ai)->value.c] = rand_value;
-											t_e.RHS = int_defined((*ai)->value.c);
-										}
-									}
-									break;
-								case 1: //DIRECT_INT
-								case 4: //IMMEDIATE_INT
-									if(!LHS)
-										t_e.LHS = (*ai)->value.i;
-									else
-										t_e.RHS = (*ai)->value.i;
 									break;
 								default:
 									break;
 							}
 						}
-						if (strcmp(t_e.op,"+") == 0) {
-							t_e.value = t_e.LHS + t_e.RHS;
-						}
-						else if (strcmp(t_e.op,"-") == 0) {
-							t_e.value = t_e.LHS - t_e.RHS;
-						}
-						else if (strcmp(t_e.op,"*") == 0) {
-							t_e.value = t_e.LHS * t_e.RHS;
-						}
-						else if (strcmp(t_e.op,"/") == 0) {
-							t_e.value = t_e.LHS / t_e.RHS;
-						}
-
-						(*ei)->argList.clear(); //Remove all elements;
-						Arg a;
-						a.i = t_e.value;
-						if (imm)
-							(*ei)->argList.push_back(new AssemblyArgument(4,a));
-						else
-							(*ei)->argList.push_back(new AssemblyArgument(1,a)); 
 					
 					}
 				}
@@ -359,24 +342,31 @@ void address_label(AssemblyProgram* &ass_program){
 }
 int main(int, char**) {
 	std::cout << "------START PARSING------\n";
-	handle("8051Assembly");
-	std::cout << "-----PARSING RESULT------\n";
-	//print_ass(ass_program);
+	handle("assembly2");
+
 	std::cout << "-----HANDLE BINARY EXPRESSION---\n";
+	init_defined();
 	handle_binary(ass_program);
+
 	std::cout << "-----HANDLE BIT ---\n";
-	handle_bit(ass_program);
-	//print_ass(ass_program);
+	//handle_bit(ass_program);
+
 	std::cout << "-----APPENDING JUMP AND BRANCH STATEMENTS---\n";	
 	append_jumps(ass_program);
+
+	myfile.open("FinalResult");
 	print_ass(ass_program);
+	myfile.close();
+
 	std::cout << "---ADDRESSING LABEL---\n";
 	address_label(ass_program);
+
 	list<AssemblyLabel*>::iterator lbi;
 	if (ass_program){
 		for(lbi = ass_program->labelList->begin();lbi != ass_program->labelList->end(); lbi++){
 			std::cout << (*lbi)->name << " : " << (*lbi)->address << std::endl;
 		}
 	}
+
 	return 0;
 }

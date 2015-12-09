@@ -6,6 +6,7 @@ using namespace std;
 #define YY_DECL extern "C" int yylex()
 char *pEnd;
 %}
+%option noyywrap
 %%
 [ \t] ;
 \$ {return END_OF_LINE;}

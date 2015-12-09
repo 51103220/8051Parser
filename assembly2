@@ -1,0 +1,11 @@
+PUBLIC bb
+bb:
+	MOV A, Option + 1
+	MOV R7, #someFlag + 100
+	SETB ACC.7
+	CLR ACC.8
+	JNB ACC.8, cc
+
+cc: 
+	MOV R7, #someFlag + 450
+	SETB DRAB

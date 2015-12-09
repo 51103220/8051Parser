@@ -14,7 +14,7 @@ AssScanner.o: AssScanner.cpp
 main.o: AssParser.cpp main.cpp 
 	g++ -c main.cpp
 main:  main.o AssScanner.o
-	g++ -o main main.o  AssScanner.o -lfl
+	g++ -o main main.o  AssScanner.o
 
 clean:
 		rm -f *.o main AssParser.cpp AssScanner.cpp AssParser.h
